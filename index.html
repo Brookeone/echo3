@@ -509,6 +509,17 @@ function computeResult(){
   return ranked;
 }
 
+function computeScores(){
+  // 归一化全局 scores 到 0-1，用于余弦相似度计算与界面展示
+  const max = 21;
+  const norm = {};
+  DIM_KEYS.forEach(k=>{
+    const v = scores[k] || 0;
+    norm[k] = Math.max(0, Math.min(1, v / max));
+  });
+  return norm;
+}
+
 function needsHiddenQuestions(ranked){
   if(ranked.length<2) return false;
   return (ranked[0].sim - ranked[1].sim) < 0.05;
