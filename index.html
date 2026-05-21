@@ -38,7 +38,6 @@ body{background:var(--bg);color:var(--fg);font-family:var(--serif);min-height:10
 
 /* KEYFRAMES */
 @keyframes fade-up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-@keyframes fade-in{from{opacity:0}to{opacity:1}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
 @keyframes pulse-glow{0%,100%{text-shadow:0 0 6px var(--green-glow)}50%{text-shadow:0 0 20px var(--green-glow),0 0 40px var(--green-dim)}}
 @keyframes slide-right{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
@@ -66,10 +65,7 @@ body{background:var(--bg);color:var(--fg);font-family:var(--serif);min-height:10
 .pl:nth-child(8){animation:fade-up .7s ease 1.9s forwards}
 .pl:nth-child(9){animation:fade-up .7s ease 2.1s forwards}
 .pl:nth-child(10){animation:fade-up .7s ease 2.3s forwards}
-.pl:nth-child(11){animation:fade-up .7s ease 2.5s forwards}
-.pl.gap2{height:1.4rem;opacity:1;transform:none;animation:none}
-.pl:nth-child(13){animation:fade-up .7s ease 2.9s forwards}
-.start-wrap{opacity:0;animation:fade-up .8s ease 3.7s forwards}
+.start-wrap{opacity:0;animation:fade-up .8s ease 2.7s forwards}
 .start-btn{display:inline-block;font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;color:var(--bg);background:var(--green);border:none;padding:1rem 2.4rem;cursor:pointer;transition:transform .2s,box-shadow .2s;clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px))}
 .start-btn::before{content:'▶ ';opacity:.7}
 .start-btn:hover{transform:translateY(-2px);box-shadow:0 0 32px var(--green-glow),0 0 70px var(--green-dim),0 8px 24px rgba(0,0,0,.4)}
@@ -84,19 +80,27 @@ body{background:var(--bg);color:var(--fg);font-family:var(--serif);min-height:10
 .q-body{width:100%;max-width:720px}
 .q-scenario-label{font-family:var(--mono);font-size:.58rem;letter-spacing:.25em;color:var(--fg-dim);margin-bottom:1.2rem;opacity:0;animation:fade-up .5s ease .05s forwards}
 .q-scenario{font-size:clamp(1rem,2vw,1.18rem);font-weight:300;line-height:1.85;color:var(--fg-bright);margin-bottom:3rem;opacity:0;animation:fade-up .5s ease .1s forwards;padding-left:1.2rem;border-left:1px solid var(--fg-ghost)}
-.opts{display:flex;flex-direction:column;gap:.9rem}
-.opt{display:flex;align-items:flex-start;gap:1rem;background:transparent;border:1px solid var(--fg-ghost);padding:1.2rem 1.4rem;cursor:pointer;text-align:left;color:var(--fg-dim);font-family:var(--serif);font-size:clamp(.88rem,1.6vw,1rem);line-height:1.7;transition:border-color .2s,color .2s,background .2s,transform .2s;position:relative;overflow:hidden;opacity:0;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))}
-.opt:nth-child(1){animation:slide-right .45s ease .18s forwards}
-.opt:nth-child(2){animation:slide-right .45s ease .26s forwards}
-.opt:nth-child(3){animation:slide-right .45s ease .34s forwards}
-.opt:nth-child(4){animation:slide-right .45s ease .42s forwards}
-.opt::before{content:'';position:absolute;inset:0;background:var(--green);transform:translateX(-101%);transition:transform .35s cubic-bezier(.16,1,.3,1);z-index:0;opacity:.06}
-.opt:hover::before{transform:translateX(0)}
-.opt:hover{border-color:var(--green);color:var(--fg-bright);transform:translateX(4px)}
-.opt>*{position:relative;z-index:1}
-.opt-l{font-family:var(--mono);font-size:.6rem;letter-spacing:.1em;color:var(--fg-ghost);padding-top:.25rem;min-width:1.4rem;transition:color .2s}
-.opt:hover .opt-l{color:var(--green)}
-.opt-t{flex:1}
+
+/* LIKERT 选项网格样式 */
+.likert-opts{display:grid;grid-template-columns:repeat(7,1fr);gap:.4rem}
+.opt-likert{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:.8rem .3rem;gap:.3rem;background:transparent;border:1px solid var(--fg-ghost);cursor:pointer;transition:all .2s;position:relative;overflow:hidden;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))}
+.opt-likert::before{content:'';position:absolute;inset:0;background:var(--green);transform:translateX(-101%);transition:transform .35s;z-index:0;opacity:.06}
+.opt-likert:hover::before{transform:translateX(0)}
+.opt-likert:hover{border-color:var(--green);transform:translateY(-2px)}
+.opt-likert > *{position:relative;z-index:1}
+.opt-num{font-family:var(--mono);font-size:.85rem;font-weight:700;color:var(--fg-dim);transition:color .2s;line-height:1}
+.opt-likert .opt-t{font-size:.6rem;line-height:1.3;text-align:center;color:var(--fg-dim);font-family:var(--mono)}
+.opt-likert:hover .opt-num, .opt-likert:hover .opt-t{color:var(--green)}
+.likert-labels{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.5rem;color:var(--fg-dim);margin-top:.4rem;letter-spacing:.08em}
+
+/* 手机端响应式修复：改为垂直列表，不再隐藏文字 */
+@media(max-width:600px){
+  .likert-opts{display:flex;flex-direction:column;gap:0.4rem}
+  .opt-likert{flex-direction:row;justify-content:flex-start;padding:0.9rem 1.2rem;gap:1.2rem}
+  .opt-num{font-size:1.1rem}
+  .opt-likert .opt-t{font-size:0.85rem;text-align:left;opacity:0.9}
+  .likert-labels{display:none} /* 垂直排列后不再需要底部统一标签 */
+}
 
 /* ─── CALC ─── */
 #screen-calc{justify-content:center;align-items:center;min-height:100vh;text-align:center;gap:1.5rem}
@@ -137,19 +141,8 @@ body{background:var(--bg);color:var(--fg);font-family:var(--serif);min-height:10
 #posterPreview{max-width:240px;width:100%;border:1px solid var(--fg-ghost);display:block}
 .rs-btn{display:block;width:100%;font-family:var(--mono);font-size:.6rem;letter-spacing:.2em;color:var(--fg-dim);background:transparent;border:1px solid var(--fg-ghost);padding:.85rem;cursor:pointer;text-align:center;margin-top:.8rem;transition:color .2s,border-color .2s;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px))}
 .rs-btn:hover{color:var(--fg);border-color:var(--fg-dim)}
-/* Likert scale */
-.likert-opts{display:grid;grid-template-columns:repeat(7,1fr);gap:.4rem}
-.opt-likert{flex-direction:column;align-items:center;justify-content:center;padding:.8rem .3rem;gap:.3rem}
-.opt-num{font-family:var(--mono);font-size:.85rem;font-weight:700;color:var(--fg-dim);transition:color .2s;line-height:1}
-.opt-likert .opt-t{font-size:.6rem;line-height:1.3;text-align:center;opacity:.5;font-family:var(--mono)}
-.opt-likert:hover .opt-num{color:var(--green)}
-.opt-likert:nth-child(7):hover .opt-num{color:var(--green);text-shadow:0 0 10px var(--green-glow)}
-.likert-labels{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.5rem;color:var(--fg-dim);margin-top:.4rem;letter-spacing:.08em}
-/* Hidden badge */
 .hidden-badge{font-family:var(--mono);font-size:.58rem;letter-spacing:.18em;color:var(--bg);background:rgba(192,132,252,.85);padding:.3rem .8rem;display:inline-block;margin-bottom:1rem;clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px))}
-/* Match % badge */
 .r-match-pct{font-family:var(--mono);font-size:.58rem;letter-spacing:.18em;color:rgba(var(--planet-rgb,74,222,128),.6);margin-top:.5rem}
-/* Secondary planet block */
 .r-secondary{background:rgba(var(--planet-rgb,100,100,100),.03);border-radius:2px}
 .secondary-wrap{display:flex;align-items:flex-start;gap:1.2rem}
 .secondary-orb{flex-shrink:0}
@@ -157,35 +150,13 @@ body{background:var(--bg);color:var(--fg);font-family:var(--serif);min-height:10
 .secondary-name{font-size:1rem;font-weight:300;letter-spacing:.06em;color:var(--fg);margin-bottom:.2rem}
 .secondary-sub{font-family:var(--mono);font-size:.6rem;letter-spacing:.15em;color:rgba(var(--planet-rgb,100,100,100),.5);margin-bottom:.7rem}
 .secondary-desc{font-size:.85rem;font-weight:300;line-height:1.9;color:var(--fg-dim);font-style:italic}
-@media(max-width:520px){.likert-opts{grid-template-columns:repeat(7,1fr);gap:.2rem}.opt-likert .opt-t{display:none}.secondary-wrap{flex-direction:column}}
-@media(max-width:520px){.r-header{flex-direction:column;gap:1rem}.dim-grid{grid-template-columns:1fr}}
 
-/* ── PSYCHOLOGICAL KEYWORDS ── */
+@media(max-width:520px){.r-header{flex-direction:column;gap:1rem}.dim-grid{grid-template-columns:1fr}.secondary-wrap{flex-direction:column}}
+
 .r-kw-sec { padding-top: 0; border-top: none; margin-top: -0.8rem; }
-.kw-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-}
-.kw-tag {
-  font-family: var(--serif);
-  font-size: 0.78rem;
-  font-weight: 300;
-  letter-spacing: 0.06em;
-  color: var(--planet-col, var(--green));
-  background: rgba(var(--planet-rgb, 74,222,128), 0.07);
-  border: 1px solid rgba(var(--planet-rgb, 74,222,128), 0.22);
-  padding: 0.28rem 0.75rem;
-  border-radius: 0;
-  clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 5px 100%, 0 calc(100% - 5px));
-  transition: background 0.2s, box-shadow 0.2s;
-  cursor: default;
-}
-.kw-tag:hover {
-  background: rgba(var(--planet-rgb, 74,222,128), 0.14);
-  box-shadow: 0 0 8px rgba(var(--planet-rgb, 74,222,128), 0.25);
-}
+.kw-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+.kw-tag { font-family: var(--serif); font-size: 0.78rem; font-weight: 300; letter-spacing: 0.06em; color: var(--planet-col, var(--green)); background: rgba(var(--planet-rgb, 74,222,128), 0.07); border: 1px solid rgba(var(--planet-rgb, 74,222,128), 0.22); padding: 0.28rem 0.75rem; border-radius: 0; clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 5px 100%, 0 calc(100% - 5px)); transition: background 0.2s, box-shadow 0.2s; cursor: default; }
+.kw-tag:hover { background: rgba(var(--planet-rgb, 74,222,128), 0.14); box-shadow: 0 0 8px rgba(var(--planet-rgb, 74,222,128), 0.25); }
 </style>
 </head>
 <body>
@@ -207,7 +178,6 @@ body{background:var(--bg);color:var(--fg);font-family:var(--serif);min-height:10
     <p class="pl accent">我们不是单一的人格标签。</p>
     <p class="pl accent">我们是温度、轨道、大气、引力</p>
     <p class="pl accent">和未知海洋组成的行星系统。</p>
-    <div class="pl gap2"></div>
   </div>
   <div class="start-wrap">
     <button class="start-btn" id="btnStart">以宇宙尺度，看见自己</button>
@@ -216,9 +186,9 @@ body{background:var(--bg);color:var(--fg);font-family:var(--serif);min-height:10
 
 <section id="screen-quiz" class="screen">
   <div class="q-header">
-    <span class="q-signal" id="sigLbl">SIGNAL 01 / 30</span>
+    <span class="q-signal" id="sigLbl">SIGNAL 01 / 21</span>
     <div class="q-bar"><div class="q-fill" id="qFill"></div></div>
-    <span class="q-count" id="qCount">01 / 30</span>
+    <span class="q-count" id="qCount">01 / 21</span>
   </div>
   <div class="q-body" id="qBody"></div>
 </section>
@@ -275,7 +245,7 @@ function getLikertOptions(dimension){
     {id:'1',text:'完全不是这样',      w:{[dimension]:1}},
     {id:'2',text:'大多时候不是',      w:{[dimension]:2}},
     {id:'3',text:'有点不像我',        w:{[dimension]:3}},
-    {id:'4',text:'说不清 / 一半一半', w:{[dimension]:4}},
+    {id:'4',text:'说不清/一半一半',   w:{[dimension]:4}},
     {id:'5',text:'有点像我',          w:{[dimension]:5}},
     {id:'6',text:'大多时候是这样',    w:{[dimension]:6}},
     {id:'7',text:'完全就是我',        w:{[dimension]:7}}
@@ -321,36 +291,31 @@ const HIDDEN_QUESTIONS=[
     id:'H1', hidden:true,
     scenario:'如果世界注定坍塌，我宁愿把最后的时间用来读完一本能精准击中我灵魂、引发深层共鸣的旧书，也不会去翻阅一本能让我多苟活两天的生存手册。',
     duelDims: ['value_alignment', 'orbital_stability'],
-    getWeights(score){ return { value_alignment: score, orbital_stability: 8 - score }; },
-    options: getLikertOptions('_dual_H1')
+    getWeights(score){ return { value_alignment: score, orbital_stability: 8 - score }; }
   },
   {
     id:'H2', hidden:true,
     scenario:'当我察觉到自己内心深处那些阴暗、不可理喻、甚至带有破坏欲的冲动时，我并不觉得恐惧或羞耻，反而隐隐觉得，那才是我生命力最原始、最真实的部分。',
     duelDims: ['internal_ocean', 'atmospheric_defense'],
-    getWeights(score){ return { internal_ocean: score, atmospheric_defense: 8 - score }; },
-    options: getLikertOptions('_dual_H2')
+    getWeights(score){ return { internal_ocean: score, atmospheric_defense: 8 - score }; }
   },
   {
     id:'H3', hidden:true,
     scenario:'面对一个千疮百孔、毫无逻辑的旧系统，我内心最真实的渴望从来不是去打补丁修复它，而是想掌握它的底层代码，然后彻底推翻重写。',
     duelDims: ['sisyphean_resistance', 'absurdity_perception'],
-    getWeights(score){ return { sisyphean_resistance: score, absurdity_perception: 8 - score }; },
-    options: getLikertOptions('_dual_H3')
+    getWeights(score){ return { sisyphean_resistance: score, absurdity_perception: 8 - score }; }
   },
   {
     id:'H4', hidden:true,
     scenario:'只有在面对那种"只要不断重复练习、破解难题、或者付出体力流汗，就能看到明确进度条"的事情上，我才能真正获得一种对抗虚无的安全感。',
     duelDims: ['orbital_stability', null],
-    getWeights(score){ return { orbital_stability: score, sisyphean_resistance: score >= 5 ? 2 : 0 }; },
-    options: getLikertOptions('_dual_H4')
+    getWeights(score){ return { orbital_stability: score, sisyphean_resistance: score >= 5 ? 2 : 0 }; }
   },
   {
     id:'H5', hidden:true,
     scenario:'我越来越强烈地感觉到，我在这世上疯狂寻找和渴望的某个人、某段关系，本质上只是我自己灵魂中某块缺失碎片的外部投影，我爱的其实是"另一个自己"。',
     duelDims: ['stellar_attachment', 'internal_ocean'],
-    getWeights(score){ return { stellar_attachment: score, internal_ocean: score >= 5 ? score - 2 : 2 }; },
-    options: getLikertOptions('_dual_H5')
+    getWeights(score){ return { stellar_attachment: score, internal_ocean: score >= 5 ? score - 2 : 2 }; }
   }
 ];
 
@@ -503,7 +468,10 @@ DIM_KEYS.forEach(k=>scores[k]=0);
 
 function computeScores(){
   const norm={};
-  DIM_KEYS.forEach(k=>norm[k]=Math.max(0,Math.min(21,scores[k]))/21);
+  DIM_KEYS.forEach(k=>{
+    // 强制防越界：最高分 21，最低分 0
+    norm[k] = Math.max(0, Math.min(21, scores[k])) / 21;
+  });
   return norm;
 }
 
@@ -517,8 +485,9 @@ function computeResult(){
       const uv=norm[k];
       dot+=pv*uv; magP+=pv*pv; magU+=uv*uv;
     });
-    const denom=Math.sqrt(magP)*Math.sqrt(magU)||1;
-    const sim=dot/denom;
+    // 防除0崩溃处理
+    const denom = Math.sqrt(magP) * Math.sqrt(magU);
+    const sim = denom ? (dot / denom) : 0;
     ranked.push({name,sim});
   });
   ranked.sort((a,b)=>b.sim-a.sim);
@@ -562,7 +531,6 @@ function renderQ(idx, isHidden=false){
   }
 
   const body = document.getElementById('qBody');
-
   const dimDisplay = {
     orbital_stability:'轨道稳定性', internal_ocean:'内在海洋深度',
     atmospheric_defense:'大气防御厚度', stellar_attachment:'恒星依附度',
@@ -628,7 +596,6 @@ function triggerHiddenMode(ranked){
 
   const body = document.getElementById('qBody');
   body.style.cssText = 'opacity:0;transform:translateY(-8px);transition:opacity .3s,transform .3s';
-
   setTimeout(()=>{
     body.style.cssText = '';
     document.getElementById('qFill').style.width = '100%';
@@ -661,9 +628,16 @@ function selectHidden(opt){
 /* ══════════════════════════════════
    CALCULATING
 ══════════════════════════════════ */
+// 新增全局变量，防止定时器互相干扰
+let calcTimeout = null; 
+
 function finishQuiz(){
   showScreen('screen-calc');
-  const el=document.getElementById('calcLines');
+  const el = document.getElementById('calcLines');
+  el.textContent = ''; // 极其重要：强制清空上一次结果的面板，防止二次测试卡死
+  
+  if (calcTimeout) clearTimeout(calcTimeout); // 拦截上一次未完成的排队动画
+
   const ranked = computeResult();
   const norm = computeScores();
   const lines=[
@@ -682,8 +656,14 @@ function finishQuiz(){
   ];
   let i=0;
   (function print(){
-    if(i<lines.length){el.textContent+=lines[i]+'\n';i++;setTimeout(print,160);}
-    else{document.getElementById('calcStatus').textContent='PLANET IDENTIFIED.';setTimeout(()=>showResult(ranked),900);}
+    if(i<lines.length){
+      el.textContent+=lines[i]+'\n';
+      i++;
+      calcTimeout = setTimeout(print,160);
+    } else {
+      document.getElementById('calcStatus').textContent='PLANET IDENTIFIED.';
+      calcTimeout = setTimeout(()=>showResult(ranked),900);
+    }
   })();
 }
 
@@ -702,6 +682,8 @@ function showResult(ranked){
   showScreen('screen-result');
 
   const rs = document.getElementById('screen-result');
+  if(!rs) return; // 容错保护
+  
   rs.style.setProperty('--planet-col', p.col);
   rs.style.setProperty('--planet-glow', p.glow);
   const [pr,pg,pb] = p.col.length===7
@@ -772,17 +754,57 @@ function showResult(ranked){
     </div>`;
 
   setTimeout(()=>{
-    drawRadar(document.getElementById('radarCanvas'), rd, p.col);
-    buildDimGrid(document.getElementById('dimGrid'), rd);
-    genPoster(p, rd);
+    try {
+      drawRadar(document.getElementById('radarCanvas'), rd, p.col);
+      buildDimGrid(document.getElementById('dimGrid'), rd);
+      genPoster(p, rd);
+    } catch(e) {
+      console.error("Canvas Render Error:", e);
+    }
   }, 100);
 
+  // 修复了“重新测试”的残留问题
   document.getElementById('btnRS').onclick = () => {
+    if(calcTimeout) clearTimeout(calcTimeout);
     curQ=0; hiddenMode=false; hiddenQueue=[]; pendingResult=null;
     DIM_KEYS.forEach(k=>scores[k]=0);
+    document.getElementById('calcLines').textContent = ''; // 置空控制台
     showScreen('screen-landing');
   };
   document.getElementById('btnDL').onclick = dlPoster;
+}
+
+function buildSVG(p){
+  const [c1,c2,c3]=p.orb;
+  return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <radialGradient id="rg${p.id}" cx="36%" cy="30%" r="68%">
+        <stop offset="0%" stop-color="${p.col}" stop-opacity=".85"/>
+        <stop offset="40%" stop-color="${c1}"/>
+        <stop offset="72%" stop-color="${c2}"/>
+        <stop offset="100%" stop-color="${c3}"/>
+      </radialGradient>
+      <radialGradient id="hl${p.id}" cx="30%" cy="25%" r="45%">
+        <stop offset="0%" stop-color="${p.col}" stop-opacity=".4"/>
+        <stop offset="100%" stop-color="${p.col}" stop-opacity="0"/>
+      </radialGradient>
+      <filter id="bf${p.id}" x="-50%" y="-50%" width="200%" height="200%">
+        <feGaussianBlur stdDeviation="3.5"/>
+      </filter>
+      <filter id="sf${p.id}" x="-20%" y="-20%" width="140%" height="140%">
+        <feGaussianBlur stdDeviation="1.2"/>
+      </filter>
+    </defs>
+    <circle cx="50" cy="50" r="46" fill="${p.col}" opacity=".1" filter="url(#bf${p.id})"/>
+    <circle cx="50" cy="50" r="40" fill="${p.col}" opacity=".06" filter="url(#sf${p.id})"/>
+    <circle cx="50" cy="50" r="34" fill="url(#rg${p.id})"/>
+    <circle cx="50" cy="50" r="34" fill="url(#hl${p.id})"/>
+    <circle cx="50" cy="50" r="34" fill="none" stroke="${c3}" stroke-width="1" opacity=".6"/>
+    <ellipse cx="50" cy="50" rx="46" ry="10" fill="none" stroke="${p.col}" stroke-width=".6" opacity=".4"/>
+    <ellipse cx="50" cy="50" rx="46" ry="10" fill="none" stroke="${p.col}" stroke-width="2" stroke-dasharray="4 40" opacity=".6"/>
+    <circle cx="96" cy="50" r="2.5" fill="${p.col}" opacity=".85"/>
+    <circle cx="96" cy="50" r="4" fill="${p.col}" opacity=".2" filter="url(#sf${p.id})"/>
+  </svg>`;
 }
 
 function buildSVGSmall(p){
@@ -970,7 +992,13 @@ function dlPoster(){
 /* ══════════════════════════════════
    BOOT
 ══════════════════════════════════ */
-document.getElementById('btnStart').addEventListener('click',()=>{showScreen('screen-quiz');curQ=0;hiddenCurQ=0;DIM_KEYS.forEach(k=>scores[k]=0);hiddenMode=false;hiddenQueue=[];pendingResult=null;renderQ(0,false);});
+document.getElementById('btnStart').addEventListener('click',()=>{
+  showScreen('screen-quiz');
+  curQ=0;hiddenCurQ=0;
+  DIM_KEYS.forEach(k=>scores[k]=0);
+  hiddenMode=false;hiddenQueue=[];pendingResult=null;
+  renderQ(0,false);
+});
 </script>
 </body>
 </html>
