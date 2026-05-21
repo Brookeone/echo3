@@ -93,13 +93,29 @@ body{background:var(--bg);color:var(--fg);font-family:var(--serif);min-height:10
 .opt-likert:hover .opt-num, .opt-likert:hover .opt-t{color:var(--green)}
 .likert-labels{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.5rem;color:var(--fg-dim);margin-top:.4rem;letter-spacing:.08em}
 
-/* 手机端响应式修复：改为垂直列表，不再隐藏文字 */
+/* BACK BUTTON (撤销/返回上一题) */
+.back-btn{
+  font-family:var(--mono);
+  font-size:0.58rem;
+  letter-spacing:0.15em;
+  color:var(--fg-dim);
+  background:transparent;
+  border:1px solid var(--fg-ghost);
+  padding:0.7rem 1.4rem;
+  margin-top:2.5rem;
+  cursor:pointer;
+  transition:all 0.2s;
+  clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+}
+.back-btn:hover{color:var(--green);border-color:var(--green);}
+
+/* 手机端响应式修复：垂直列表显示文字 */
 @media(max-width:600px){
   .likert-opts{display:flex;flex-direction:column;gap:0.4rem}
   .opt-likert{flex-direction:row;justify-content:flex-start;padding:0.9rem 1.2rem;gap:1.2rem}
   .opt-num{font-size:1.1rem}
   .opt-likert .opt-t{font-size:0.85rem;text-align:left;opacity:0.9}
-  .likert-labels{display:none} /* 垂直排列后不再需要底部统一标签 */
+  .likert-labels{display:none} 
 }
 
 /* ─── CALC ─── */
@@ -245,7 +261,7 @@ function getLikertOptions(dimension){
     {id:'1',text:'完全不是这样',      w:{[dimension]:1}},
     {id:'2',text:'大多时候不是',      w:{[dimension]:2}},
     {id:'3',text:'有点不像我',        w:{[dimension]:3}},
-    {id:'4',text:'说不清/一半一半',   w:{[dimension]:4}},
+    {id:'4',text:'说不清 / 一半一半', w:{[dimension]:4}},
     {id:'5',text:'有点像我',          w:{[dimension]:5}},
     {id:'6',text:'大多时候是这样',    w:{[dimension]:6}},
     {id:'7',text:'完全就是我',        w:{[dimension]:7}}
@@ -461,15 +477,16 @@ const DIM_KEYS=['orbital_stability','internal_ocean','atmospheric_defense','stel
 const DIM_LABELS={'orbital_stability':'轨道稳定性','internal_ocean':'内在海洋深度','atmospheric_defense':'大气防御厚度','stellar_attachment':'恒星依附度','absurdity_perception':'荒诞感知力','sisyphean_resistance':'西西弗斯反抗力','value_alignment':'价值一致性'};
 
 /* ══════════════════════════════════
-   STATE
+   STATE & HISTORY
 ══════════════════════════════════ */
 let curQ=0, hiddenCurQ=0, scores={}, hiddenMode=false, hiddenQueue=[], pendingResult=null;
+let answerHistory = []; // 新增：保存历史选项，用于回退
+let isAnimating = false; // 防连点保护
 DIM_KEYS.forEach(k=>scores[k]=0);
 
 function computeScores(){
   const norm={};
   DIM_KEYS.forEach(k=>{
-    // 强制防越界：最高分 21，最低分 0
     norm[k] = Math.max(0, Math.min(21, scores[k])) / 21;
   });
   return norm;
@@ -485,7 +502,6 @@ function computeResult(){
       const uv=norm[k];
       dot+=pv*uv; magP+=pv*pv; magU+=uv*uv;
     });
-    // 防除0崩溃处理
     const denom = Math.sqrt(magP) * Math.sqrt(magU);
     const sim = denom ? (dot / denom) : 0;
     ranked.push({name,sim});
@@ -509,7 +525,7 @@ function showScreen(id){
 }
 
 /* ══════════════════════════════════
-   QUIZ ENGINE
+   QUIZ ENGINE (含返回逻辑)
 ══════════════════════════════════ */
 function renderQ(idx, isHidden=false){
   const q = isHidden ? hiddenQueue[hiddenCurQ] : QUESTIONS[idx];
@@ -554,12 +570,28 @@ function renderQ(idx, isHidden=false){
     b.addEventListener('click', () => isHidden ? selectHidden(o) : selectOpt(o));
     opts.appendChild(b);
   });
+
+  // 如果有历史记录，追加返回按钮
+  if(answerHistory.length > 0){
+    const backBtn = document.createElement('button');
+    backBtn.className = 'back-btn';
+    backBtn.innerText = '← UNDO / 返回上一级';
+    backBtn.onclick = goBack;
+    body.appendChild(backBtn);
+  }
 }
 
 function selectOpt(opt){
+  if(isAnimating) return;
+  isAnimating = true;
   triggerInterference();
+  
+  // 记录历史
+  answerHistory.push({ mode: 'main', qIdx: curQ, w: opt.w });
+
   Object.entries(opt.w).forEach(([k,v])=>{if(scores[k]!==undefined)scores[k]+=v;});
   curQ++;
+  
   if(curQ >= QUESTIONS.length){
     const ranked = computeResult();
     if(needsHiddenQuestions(ranked)){
@@ -571,7 +603,7 @@ function selectOpt(opt){
   }
   const body = document.getElementById('qBody');
   body.style.cssText = 'opacity:0;transform:translateY(-8px);transition:opacity .25s,transform .25s';
-  setTimeout(()=>{ body.style.cssText=''; renderQ(curQ); }, 280);
+  setTimeout(()=>{ body.style.cssText=''; renderQ(curQ); isAnimating=false; }, 280);
 }
 
 function triggerHiddenMode(ranked){
@@ -601,11 +633,18 @@ function triggerHiddenMode(ranked){
     document.getElementById('qFill').style.width = '100%';
     document.getElementById('qFill').style.boxShadow = '0 0 12px var(--green-glow)';
     renderQ(0, true);
+    isAnimating=false;
   }, 350);
 }
 
 function selectHidden(opt){
+  if(isAnimating) return;
+  isAnimating = true;
   triggerInterference();
+  
+  // 记录历史
+  answerHistory.push({ mode: 'hidden', qIdx: hiddenCurQ, w: opt.w });
+
   Object.entries(opt.w).forEach(([k,v]) => {
     if(DIM_KEYS.includes(k)) scores[k] += v;
   });
@@ -622,21 +661,50 @@ function selectHidden(opt){
 
   const body = document.getElementById('qBody');
   body.style.cssText = 'opacity:0;transform:translateY(-8px);transition:opacity .25s,transform .25s';
-  setTimeout(()=>{ body.style.cssText=''; renderQ(hiddenCurQ, true); }, 280);
+  setTimeout(()=>{ body.style.cssText=''; renderQ(hiddenCurQ, true); isAnimating=false; }, 280);
+}
+
+// 核心回退逻辑 (UNDO)
+function goBack() {
+  if (isAnimating || answerHistory.length === 0) return;
+  isAnimating = true;
+
+  const last = answerHistory.pop();
+  
+  // 精确回滚分数
+  Object.entries(last.w).forEach(([k, v]) => {
+    if (scores[k] !== undefined) scores[k] -= v;
+  });
+
+  const body = document.getElementById('qBody');
+  body.style.cssText = 'opacity:0;transform:translateY(8px);transition:opacity .25s,transform .25s';
+  
+  setTimeout(() => {
+    body.style.cssText = '';
+    if (last.mode === 'main') {
+      curQ = last.qIdx;
+      hiddenMode = false;
+      renderQ(curQ, false);
+    } else {
+      hiddenCurQ = last.qIdx;
+      hiddenMode = true;
+      renderQ(hiddenCurQ, true);
+    }
+    isAnimating = false;
+  }, 280);
 }
 
 /* ══════════════════════════════════
    CALCULATING
 ══════════════════════════════════ */
-// 新增全局变量，防止定时器互相干扰
 let calcTimeout = null; 
 
 function finishQuiz(){
   showScreen('screen-calc');
   const el = document.getElementById('calcLines');
-  el.textContent = ''; // 极其重要：强制清空上一次结果的面板，防止二次测试卡死
+  el.textContent = ''; 
   
-  if (calcTimeout) clearTimeout(calcTimeout); // 拦截上一次未完成的排队动画
+  if (calcTimeout) clearTimeout(calcTimeout); 
 
   const ranked = computeResult();
   const norm = computeScores();
@@ -682,7 +750,7 @@ function showResult(ranked){
   showScreen('screen-result');
 
   const rs = document.getElementById('screen-result');
-  if(!rs) return; // 容错保护
+  if(!rs) return; 
   
   rs.style.setProperty('--planet-col', p.col);
   rs.style.setProperty('--planet-glow', p.glow);
@@ -763,12 +831,12 @@ function showResult(ranked){
     }
   }, 100);
 
-  // 修复了“重新测试”的残留问题
   document.getElementById('btnRS').onclick = () => {
     if(calcTimeout) clearTimeout(calcTimeout);
     curQ=0; hiddenMode=false; hiddenQueue=[]; pendingResult=null;
     DIM_KEYS.forEach(k=>scores[k]=0);
-    document.getElementById('calcLines').textContent = ''; // 置空控制台
+    answerHistory = []; // 清空历史
+    document.getElementById('calcLines').textContent = ''; 
     showScreen('screen-landing');
   };
   document.getElementById('btnDL').onclick = dlPoster;
@@ -997,6 +1065,7 @@ document.getElementById('btnStart').addEventListener('click',()=>{
   curQ=0;hiddenCurQ=0;
   DIM_KEYS.forEach(k=>scores[k]=0);
   hiddenMode=false;hiddenQueue=[];pendingResult=null;
+  answerHistory=[]; // 初始清空历史
   renderQ(0,false);
 });
 </script>
