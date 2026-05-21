@@ -505,6 +505,19 @@ function computeResult(){
     const sim = denom ? (dot / denom) : 0;
     ranked.push({name,sim});
   });
+  // 输出调试信息：用户分数与每个行星的向量和相似度
+  try{
+    console.group && console.group('Gravity Collapse — Score Matching');
+    console.log('User raw scores:', JSON.parse(JSON.stringify(scores)));
+    console.log('User normalized scores:', norm);
+    ranked.forEach(r=>{
+      const p = PLANETS[r.name];
+      const vec = {};
+      DIM_KEYS.forEach(k=> vec[k] = (p.keys[k]||0)/21 );
+      console.log(`${r.name}:`, vec, 'sim=', r.sim.toFixed(4));
+    });
+    console.groupEnd && console.groupEnd();
+  }catch(e){console.warn('Logging scores failed', e)}
   ranked.sort((a,b)=>b.sim-a.sim);
   return ranked;
 }
@@ -846,6 +859,7 @@ function showResult(ranked){
     curQ=0; hiddenMode=false; hiddenQueue=[]; pendingResult=null;
     DIM_KEYS.forEach(k=>scores[k]=0);
     answerHistory = []; // 清空历史
+    isAnimating = false;
     document.getElementById('calcLines').textContent = ''; 
     showScreen('screen-landing');
   };
