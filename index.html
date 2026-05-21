@@ -269,72 +269,80 @@ function getLikertOptions(dimension){
 }
 
 const QUESTIONS=[
-  /* A. 轨道稳定性 */
-  {id:'Q1', dim:'orbital_stability', scenario:'即使外界变得混乱，我通常仍能维持基本的生活节律和行动秩序。', options:getLikertOptions('orbital_stability')},
-  {id:'Q2', dim:'orbital_stability', scenario:'当关系、工作或情绪出现波动时，我不太容易立刻失去自己的重心。', options:getLikertOptions('orbital_stability')},
-  {id:'Q3', dim:'orbital_stability', scenario:'我能在长期压力下继续运行，而不是迅速坍缩或逃离。', options:getLikertOptions('orbital_stability')},
-  /* B. 内在海洋深度 */
-  {id:'Q4', dim:'internal_ocean', scenario:'我有很多感受并不会直接显露在表面，它们更像藏在深处的水。', options:getLikertOptions('internal_ocean')},
-  {id:'Q5', dim:'internal_ocean', scenario:'别人对我的理解，常常只停留在外层，很难真正抵达我的内部。', options:getLikertOptions('internal_ocean')},
-  {id:'Q6', dim:'internal_ocean', scenario:'我经常反复思考自己的感受、选择、关系和存在状态。', options:getLikertOptions('internal_ocean')},
-  /* C. 大气防御厚度 */
-  {id:'Q7', dim:'atmospheric_defense', scenario:'我会用冷静、幽默、理性、沉默或某种形象来保护真正的自己。', options:getLikertOptions('atmospheric_defense')},
-  {id:'Q8', dim:'atmospheric_defense', scenario:'当别人试图过快靠近我、理解我或定义我时，我会本能地后退。', options:getLikertOptions('atmospheric_defense')},
-  {id:'Q9', dim:'atmospheric_defense', scenario:'我不轻易暴露最脆弱的部分，即使面对亲近的人也是如此。', options:getLikertOptions('atmospheric_defense')},
-  /* D. 恒星依附度 */
-  {id:'Q10', dim:'stellar_attachment', scenario:'我的人生很容易围绕某个人、目标、关系或执念形成核心轨道。', options:getLikertOptions('stellar_attachment')},
-  {id:'Q11', dim:'stellar_attachment', scenario:'一旦我真正投入某件事或某个人，就很难轻易抽离。', options:getLikertOptions('stellar_attachment')},
-  {id:'Q12', dim:'stellar_attachment', scenario:'我有时分不清自己是在理性追求，还是被某种强烈的感觉吸引。', options:getLikertOptions('stellar_attachment')},
-  /* E. 荒诞感知 */
-  {id:'Q13', dim:'absurdity_perception', scenario:'我经常觉得许多人认真追逐的东西，其实只是被共同相信的幻象。', options:getLikertOptions('absurdity_perception')},
-  {id:'Q14', dim:'absurdity_perception', scenario:'当别人用简单道理解释人生、成功或幸福时，我通常会感到怀疑。', options:getLikertOptions('absurdity_perception')},
-  {id:'Q15', dim:'absurdity_perception', scenario:'我深知，无论付出多少努力，这个世界都不会理所当然地给一个"交代"。', options:getLikertOptions('absurdity_perception')},
-  /* F. 西西弗斯反抗力 */
-  {id:'Q16', dim:'sisyphean_resistance', scenario:'即使我不确定人生是否有终极意义，我仍然愿意认真生活。', options:getLikertOptions('sisyphean_resistance')},
-  {id:'Q17', dim:'sisyphean_resistance', scenario:'当生活变得荒诞或失控时，我更愿意尝试行动，而不是彻底放弃。', options:getLikertOptions('sisyphean_resistance')},
-  {id:'Q18', dim:'sisyphean_resistance', scenario:'我不需要世界保证结果才决定是否继续努力，我会自我驱动。', options:getLikertOptions('sisyphean_resistance')},
-  /* G. 价值一致性 */
-  {id:'Q19', dim:'value_alignment', scenario:'我大多数重要选择，仍然会尽量忠于自己真正认可的价值。', options:getLikertOptions('value_alignment')},
-  {id:'Q20', dim:'value_alignment', scenario:'即使外界评价很强烈，我也不愿完全按照别人的标准生活。', options:getLikertOptions('value_alignment')},
-  {id:'Q21', dim:'value_alignment', scenario:'比起成为一个被认可的人，我更在意自己是否没有背叛内心深处的东西。', options:getLikertOptions('value_alignment')}
+  /* A. 轨道稳定性 (1分:灵活适应变化 - 7分:坚守固有秩序) */
+  {id:'Q1', dim:'orbital_stability', scenario:'面对生活中的突发变故，我的本能反应是优先维持原有的日常作息和运转秩序。', options:getLikertOptions('orbital_stability')},
+  {id:'Q2', dim:'orbital_stability', scenario:'在处理复杂或多任务并行的状况时，我习惯严格按照预先设定的计划推进。', options:getLikertOptions('orbital_stability')},
+  {id:'Q3', dim:'orbital_stability', scenario:'当周围环境或人际关系发生剧烈变动时，我的个人情绪状态通常不会产生明显的起伏。', options:getLikertOptions('orbital_stability')},
+  
+  /* B. 内在海洋深度 (1分:关注现实效率 - 7分:关注内心体验) */
+  {id:'Q4', dim:'internal_ocean', scenario:'在经历一件重要的事情后，我通常会花大量时间在内心回溯、咀嚼当时的个体感受。', options:getLikertOptions('internal_ocean')},
+  {id:'Q5', dim:'internal_ocean', scenario:'与外部世界的客观事实和物理发展相比，我更关注事物在内心引发的主观体验。', options:getLikertOptions('internal_ocean')},
+  {id:'Q6', dim:'internal_ocean', scenario:'我倾向于认为，我向外界展示出的性格和行为，仅仅占据了我真实自我极其微小的一部分。', options:getLikertOptions('internal_ocean')},
+  
+  /* C. 大气防御厚度 (1分:容易与人共融 - 7分:设立严密边界) */
+  {id:'Q7', dim:'atmospheric_defense', scenario:'在人际交往中，无论聊得多么投机，我都会本能地与他人保持一条明确的心理边界。', options:getLikertOptions('atmospheric_defense')},
+  {id:'Q8', dim:'atmospheric_defense', scenario:'当他人试图深入探究我的私人生活或真实想法时，我会自然而然地产生回避或转移话题的反应。', options:getLikertOptions('atmospheric_defense')},
+  {id:'Q9', dim:'atmospheric_defense', scenario:'即使是面对关系最亲密的人，我也需要保留一些绝对不与他们分享的内部空间。', options:getLikertOptions('atmospheric_defense')},
+  
+  /* D. 恒星依附度 (1分:绝对自我中心 - 7分:容易建立外部羁绊) */
+  {id:'Q10', dim:'stellar_attachment', scenario:'我的生活重心和长期目标，经常会因为一段重要关系（或某个人）的出现而发生转移。', options:getLikertOptions('stellar_attachment')},
+  {id:'Q11', dim:'stellar_attachment', scenario:'在做出一项重大的人生决定时，我极大程度上会优先考虑它对我所依恋的人的影响。', options:getLikertOptions('stellar_attachment')},
+  {id:'Q12', dim:'stellar_attachment', scenario:'当我处于一段稳定且深刻的关系中时，我对于“保持个人独立性”的需求会显著降低。', options:getLikertOptions('stellar_attachment')},
+  
+  /* E. 荒诞感知 (1分:拥抱世俗标准 - 7分:看透规则虚无) */
+  {id:'Q13', dim:'absurdity_perception', scenario:'对于社会普遍认同的成功标准和世俗规则，我内心经常抱有一种不信任和怀疑的态度。', options:getLikertOptions('absurdity_perception')},
+  {id:'Q14', dim:'absurdity_perception', scenario:'我倾向于认为，生活中的许多现象和结果是由偶然因素决定的，而非必然的因果逻辑或努力。', options:getLikertOptions('absurdity_perception')},
+  {id:'Q15', dim:'absurdity_perception', scenario:'观察人群或社会运转时，我时常会产生一种“这一切缺乏实质意义”的旁观者感受。', options:getLikertOptions('absurdity_perception')},
+  
+  /* F. 西西弗斯反抗力 (1分:顺应被动接受 - 7分:主动抗争创造) */
+  {id:'Q16', dim:'sisyphean_resistance', scenario:'即使预先知道某项行动大概率不会改变最终的不利结果，我依然会选择把当下的事情做完。', options:getLikertOptions('sisyphean_resistance')},
+  {id:'Q17', dim:'sisyphean_resistance', scenario:'面对显然不合理或令人沮丧的现状，我的第一反应是寻找行动的切入点去改变，而不是先去接受现实。', options:getLikertOptions('sisyphean_resistance')},
+  {id:'Q18', dim:'sisyphean_resistance', scenario:'我采取行动的动力，更多来源于我对自己的内在要求，而不是外界给予的反馈或奖励。', options:getLikertOptions('sisyphean_resistance')},
+  
+  /* G. 价值一致性 (1分:灵活实用妥协 - 7分:坚守内在底线) */
+  {id:'Q19', dim:'value_alignment', scenario:'在面临个人利益冲突时，我会优先考虑该选择是否符合我内在的原则，而非收益最大化。', options:getLikertOptions('value_alignment')},
+  {id:'Q20', dim:'value_alignment', scenario:'即使某种妥协能带来显而易见的好处，如果它违背了我的价值观，我也会明确拒绝。', options:getLikertOptions('value_alignment')},
+  {id:'Q21', dim:'value_alignment', scenario:'我更看重自己对自己的内部评价，而非社会环境或权威对我个人成就的认同度。', options:getLikertOptions('value_alignment')}
 ];
 
 /* ══════════════════════════════════
-   HIDDEN QUESTIONS (Q22-Q26)
+   HIDDEN QUESTIONS (Q22-Q26 同分狙击题)
 ══════════════════════════════════ */
 const HIDDEN_QUESTIONS=[
   {
     id:'H1', hidden:true,
-    scenario:'如果世界注定坍塌，我宁愿把最后的时间用来读完一本能精准击中我灵魂、引发深层共鸣的旧书，也不会去翻阅一本能让我多苟活两天的生存手册。',
+    scenario:'如果必须在“一份完全符合我核心理念但充满变数的生活”和“一份与我理念不符但能提供绝对安全感的生活”中做选择，我会毫不犹豫地选择前者。',
     duelDims: ['value_alignment', 'orbital_stability'],
     getWeights(score){ return { value_alignment: score, orbital_stability: 8 - score }; }
   },
   {
     id:'H2', hidden:true,
-    scenario:'当我察觉到自己内心深处那些阴暗、不可理喻、甚至带有破坏欲的冲动时，我并不觉得恐惧或羞耻，反而隐隐觉得，那才是我生命力最原始、最真实的部分。',
+    // 为配合算法，7分指向内海，1分指向防御
+    scenario:'比起建立一道安全的心理屏障来维持日常运转，我更愿意花费精力去深度剖析和体验自己内部那些复杂甚至隐秘的情绪。',
     duelDims: ['internal_ocean', 'atmospheric_defense'],
     getWeights(score){ return { internal_ocean: score, atmospheric_defense: 8 - score }; }
   },
   {
     id:'H3', hidden:true,
-    scenario:'面对一个千疮百孔、毫无逻辑的旧系统，我内心最真实的渴望从来不是去打补丁修复它，而是想掌握它的底层代码，然后彻底推翻重写。',
+    scenario:'当发现所处的系统（如职场规则、社会惯例）存在严重缺陷时，比起冷眼旁观或独善其身，我更有强烈的冲动去打破并重构它。',
     duelDims: ['sisyphean_resistance', 'absurdity_perception'],
     getWeights(score){ return { sisyphean_resistance: score, absurdity_perception: 8 - score }; }
   },
   {
     id:'H4', hidden:true,
-    scenario:'只有在面对那种"只要不断重复练习、破解难题、或者付出体力流汗，就能看到明确进度条"的事情上，我才能真正获得一种对抗虚无的安全感。',
+    scenario:'我对生活中“失控”和“未知”状态的容忍度较低，习惯通过建立明确的进度表、规则或计划来获取安全感。',
     duelDims: ['orbital_stability', null],
     getWeights(score){ return { orbital_stability: score, sisyphean_resistance: score >= 5 ? 2 : 0 }; }
   },
   {
     id:'H5', hidden:true,
-    scenario:'我越来越强烈地感觉到，我在这世上疯狂寻找和渴望的某个人、某段关系，本质上只是我自己灵魂中某块缺失碎片的外部投影，我爱的其实是"另一个自己"。',
+    scenario:'在我看来，建立一段深刻的外部关系（与他人的强烈羁绊），比维持一个完全不受干扰的独立自我更重要。',
     duelDims: ['stellar_attachment', 'internal_ocean'],
     getWeights(score){ return { stellar_attachment: score, internal_ocean: score >= 5 ? score - 2 : 2 }; }
   }
 ];
 
+// 初始化隐藏题的 1-7 选项机制 (不要漏掉这段)
 HIDDEN_QUESTIONS.forEach(hq => {
   hq.options = [
     {id:'1', text:'完全不是这样',      w: hq.getWeights(1)},
@@ -346,7 +354,6 @@ HIDDEN_QUESTIONS.forEach(hq => {
     {id:'7', text:'完全就是我',        w: hq.getWeights(7)}
   ];
 });
-
 /* ══════════════════════════════════
    DATA: PLANETS
 ══════════════════════════════════ */
