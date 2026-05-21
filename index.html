@@ -30,7 +30,8 @@ body{background:var(--bg);color:var(--fg);font-family:var(--serif);min-height:10
 #scan{position:fixed;inset:0;background:repeating-linear-gradient(to bottom,transparent 0px,transparent 3px,rgba(0,0,0,.07) 3px,rgba(0,0,0,.07) 4px);pointer-events:none;z-index:8999}
 
 /* WAVE */
-#waveCanvas{position:fixed;bottom:0;left:0;width:100%;height:110px;z-index:100;pointer-events:none;opacity:.65}
+/* 增大画布高度并给波形更多上方空间，避免高振幅时被裁切 */
+#waveCanvas{position:fixed;bottom:0;left:0;width:100%;height:220px;z-index:100;pointer-events:none;opacity:.65}
 
 /* PAGE GLITCH */
 @keyframes pg{0%,100%{transform:none;filter:none}50%{transform:translateX(-2px) skewX(-.5deg);filter:hue-rotate(15deg)}75%{transform:translateX(2px)}}
@@ -228,28 +229,38 @@ body{background:var(--bg);color:var(--fg);font-family:var(--serif);min-height:10
 ══════════════════════════════════ */
 const wc=document.getElementById('waveCanvas'),wCtx=wc.getContext('2d');
 let wOff=0,tAmp=12,cAmp=12;
-const bAmp=12,bFreq=.014;
-function rzWave(){wc.width=window.innerWidth;wc.height=110}
+const baseAmp=12;
+let baseFreq=0.014, freq=baseFreq, tFreq=baseFreq, tFreqTarget=baseFreq;
+function rzWave(){wc.width=window.innerWidth;wc.height=220}
 window.addEventListener('resize',rzWave);rzWave();
 function animWave(){
   wCtx.clearRect(0,0,wc.width,wc.height);
-  cAmp+=(tAmp-cAmp)*.07;
-  if(tAmp>bAmp)tAmp-=.45;if(tAmp<bAmp)tAmp=bAmp;
+  cAmp += (tAmp - cAmp) * .07;
+  // 平滑过渡目标频率到当前频率，使用较小系数保证变化缓慢
+  tFreq += (tFreqTarget - tFreq) * 0.04;
+  freq += (tFreq - freq) * 0.04;
+  // 让目标振幅逐渐回落到基础值（保持原有振幅回落速度）
+  if(tAmp > baseAmp) tAmp -= .45; if(tAmp < baseAmp) tAmp = baseAmp;
   wCtx.beginPath();
   wCtx.strokeStyle='rgba(74,222,128,.60)';wCtx.lineWidth=1.4;
   wCtx.shadowBlur=5;wCtx.shadowColor='#4ade80';
-  const cy=wc.height/2;
+  // 将绘制基线下移到画布偏下位置，给波峰和波谷更多缓冲空间
+  const cy = wc.height * 0.62;
   for(let x=0;x<wc.width;x++){
-    const noise=(Math.random()-.5)*1.2;
-    const y=cy+Math.sin(x*bFreq+wOff)*cAmp+noise;
+    const noise = (Math.random() - .5) * 1.2;
+    const y = cy + Math.sin(x * freq + wOff) * cAmp + noise;
     x===0?wCtx.moveTo(x,y):wCtx.lineTo(x,y);
   }
   wCtx.stroke();wOff+=.038;requestAnimationFrame(animWave);
 }
 animWave();
 function triggerInterference(){
-  tAmp=68;
-  document.body.classList.add('glitching');
+  // 限制振幅以避免在较小画布上越界，同时短暂提高频率使波形更紧密
+  tAmp = Math.min(68, wc.height * 0.38);
+  tFreqTarget = baseFreq * 2;
+  // 在一段时间后恢复到基础频率，freq/tFreq 将通过插值缓慢变化回落
+  // setTimeout(()=>{ tFreqTarget = baseFreq; }, 300);
+  // document.body.classList.add('glitching');
   setTimeout(()=>document.body.classList.remove('glitching'),130);
 }
 
