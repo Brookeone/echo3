@@ -491,35 +491,30 @@ let answerHistory = []; // 新增：保存历史选项，用于回退
 let isAnimating = false; // 防连点保护
 DIM_KEYS.forEach(k=>scores[k]=0);
 
-function computeScores(){
-  const norm={};
-  DIM_KEYS.forEach(k=>{
-    norm[k] = Math.max(0, Math.min(21, scores[k])) / 21;
-  });
-  return norm;
-}
-
 function computeResult(){
-  const norm=computeScores();
-  let ranked=[];
-  Object.entries(PLANETS).forEach(([name,p])=>{
-    let dot=0,magP=0,magU=0;
-    DIM_KEYS.forEach(k=>{
-      const pv=(p.keys[k]||0)/21;
-      const uv=norm[k];
-      dot+=pv*uv; magP+=pv*pv; magU+=uv*uv;
+  const norm = computeScores(); // 归一化得分 (0~1)
+  let ranked = [];
+  
+  Object.entries(PLANETS).forEach(([name, p]) => {
+    let distSq = 0;
+    DIM_KEYS.forEach(k => {
+      // 将星球的 1-7 分映射为 0-1 范围
+      const pVal = (p.keys[k] || 4) / 7; 
+      const uVal = norm[k];
+      distSq += Math.pow(pVal - uVal, 2); // 欧氏距离公式
     });
-    const denom = Math.sqrt(magP) * Math.sqrt(magU);
-    const sim = denom ? (dot / denom) : 0;
-    ranked.push({name,sim});
+    // 距离越小，相似度越高
+    ranked.push({ name, dist: Math.sqrt(distSq) });
   });
-  ranked.sort((a,b)=>b.sim-a.sim);
-  return ranked;
-}
-
-function needsHiddenQuestions(ranked){
-  if(ranked.length<2) return false;
-  return (ranked[0].sim - ranked[1].sim) < 0.05;
+  
+  // 按距离从小到大排序
+  ranked.sort((a,b) => a.dist - b.dist);
+  
+  // 转换成方便界面读取的相似度百分比
+  return ranked.map(r => ({
+      name: r.name, 
+      sim: Math.max(0, 1 - r.dist) // 归一化为相似度
+  }));
 }
 
 /* ══════════════════════════════════
